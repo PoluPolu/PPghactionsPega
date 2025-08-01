@@ -29,6 +29,7 @@ jobs:
           go test
           ./upper foo the bar
         working-directory: upper
+        name: GoBuild+test
 
       # - name: Set up Docker Compose
       #   uses: docker/setup-compose-action@v1
