@@ -11,6 +11,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - run: pwd && ls -al
+      - uses: actions/checkout@v4
+      - run: pwd && ls -al
+
       - name: Go version
         run: go version
       - uses: actions/setup-go@v5
