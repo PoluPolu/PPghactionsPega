@@ -15,8 +15,8 @@ jobs:
         run: go version
       - name: Start postrgresql
         run: sudo systemctl start postgresql.service
-      # - name: Check postrgresql version
-      #   run: /usr/lib/postgresql/13/bin/postgres --version
+      - name: Check postrgresql version
+        run: sudo -u postgres psql -c "SELECT version();"
 
 
 # jobs:
