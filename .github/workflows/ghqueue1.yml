@@ -2,7 +2,7 @@ name: Sample Git Queue 1
 
 on:
   push:
-    branches: [main]
+    branches: [GHQueue]
 
 jobs:
   serial-job:
