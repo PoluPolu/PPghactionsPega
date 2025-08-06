@@ -1,0 +1,51 @@
+name: Sample Git Queue 1
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  serial-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure git committer identity
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Create new job in queue
+        id: create-job
+        uses: Nautilus-Cyberneering/git-queue@v1
+        with:
+          git_repo_dir: ${{ github.workspace }}
+          queue_name: 'update-queue'
+          action: 'create-job'
+          job_payload: '{"state": "pending"}'
+
+      - name: Start the job
+        id: start-job
+        if: ${{ steps.create-job.outputs.job_created == 'true' }}
+        uses: Nautilus-Cyberneering/git-queue@v1
+        with:
+          git_repo_dir: ${{ github.workspace }}
+          queue_name: 'update-queue'
+          action: 'start-job'
+          job_payload: '{"state": "started"}'
+
+      - name: The actual serialized step (your workload)
+        if: ${{ steps.create-job.outputs.job_created == 'true' }}
+        run: echo "Running my exclusive workload."
+
+      - name: Finish the job
+        id: finish-job
+        if: ${{ steps.create-job.outputs.job_created == 'true' }}
+        uses: Nautilus-Cyberneering/git-queue@v1
+        with:
+          git_repo_dir: ${{ github.workspace }}
+          queue_name: 'update-queue'
+          action: 'finish-job'
+          job_payload: '{"state": "finished"}'
